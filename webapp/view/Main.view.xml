@@ -1,0 +1,120 @@
+<mvc:View xmlns:core="sap.ui.core" controllerName="cowin.cowin.controller.Main" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:layout="sap.ui.layout" xmlns:viz="sap.viz.ui5.controls" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" xmlns:viz.data="sap.viz.ui5.data">
+
+	<App id="app" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:vbm="sap.ui.vbm">
+		<pages>
+			<Page id="page" title="{i18n>title}" titleAlignment="Center">
+				<headerContent>
+					<Toolbar>
+						<Image src="https://static.wixstatic.com/media/74c3a1_d23c9389ba744c62b9883118b5b8eb74~mv2.png/v1/fill/w_124,h_124,al_c,q_85,usm_0.66_1.00_0.01/atsv1.webp" width="50px" height="50px" />
+					</Toolbar>
+				</headerContent>
+				<content>
+					<VBox>
+						<HBox justifyContent="Center" alignContent="Center" class="sapUiSmallMarginTop">
+							<VBox>
+								<RadioButtonGroup select="onRadioBtnSelect" columns="2">
+									<RadioButton text="Search by Pincode" selected="true" />
+									<RadioButton text="Search by City" />
+								</RadioButtonGroup>
+								<DatePicker id="idSelectedDate" displayFormat="dd-MM-YYYY" dateValue="{local>/dateValue}" valueFormat="dd-MM-YYYY" />
+								<HBox id="pinBox" class="sapUiSmallMarginTop" justifyContent="Start">
+									<Input id="pinCode" type="Number" placeholder="Enter Pincode" width="222px" liveChange="onPinChange" maxLength="6" />
+									<Button id="pinButton" text="Search" press="onSearch" class="sapUiSmallMarginBegin" />
+								</HBox>
+							</VBox>
+						</HBox>
+						<HBox id="cityBox" visible="false" class="sapUiSmallMarginTop" justifyContent="Center" wrap="Wrap">
+							<HBox id="">
+								<Label text="State :" class="sapUiSmallMarginTop" design="Bold" width="50px" />
+								<Select id="stateSelect" class="sapUiSmallMarginEnd sapUiTinyMarginBegin" width="250px" items="{local>/states}" forceSelection="false" change="onStateSelect">
+									<core:ListItem text="{local>state_name}" key="{local>state_id}" />
+								</Select>
+							</HBox>
+							<HBox>
+								<Label text="City :" class="sapUiSmallMarginTop" design="Bold" width="50px" />
+								<Select id="citySelect" class="sapUiSmallMarginEnd sapUiTinyMarginBegin" width="250px" items="{local>/districts}" forceSelection="false" change="onCitySelect">
+									<core:ListItem text="{local>district_name}" key="{local>district_id}" />
+								</Select>
+							</HBox>
+							<HBox>
+								<Button id="cityButton" text="Search" press="onSearch" width="auto" />
+							</HBox>
+						</HBox>
+
+
+						<Toolbar class="sapUiSmallMarginTop">
+							<ToolbarSpacer />
+							<Button id="dashboardBtn" text="See more Detail" enabled="false" press="onBtnPress" />
+						</Toolbar>
+
+
+						<!-- <viz:Popover id="idPopOver"></viz:Popover> -->
+
+
+						<OverflowToolbar height="auto" asyncMode="true" design="Solid" class="sapUiSmallMarginTop">
+							<TileContent footer="Total Vaccination" class=" sapUiLargeMarginBegin" footerColor="Good">
+								<NumericContent id="icon1" icon="https://cdn1.iconfinder.com/data/icons/modern-set-of-digital-symbols/48/configuration_dashboard-512.png" scale="M+" value="{path: 'local>/allIndia/topBlock/vaccination/total_doses', formatter: '.getCountMillion'}" />
+							</TileContent>
+							<TileContent footer="Dose 1 Vaccination" class="responsive  sapUiLargeMarginBegin" footerColor="Good">
+								<NumericContent id="icon2" icon="https://image.flaticon.com/icons/png/512/101/101960.png" scale="M+" value="{path: 'local>/allIndia/topBlock/vaccination/tot_dose_1', formatter: '.getCountMillion'}" />
+							</TileContent>
+							<TileContent footer="Dose 2 Vaccination" class="responsive  sapUiLargeMarginBegin" footerColor="Good">
+								<NumericContent id="icon3" icon="https://image.flaticon.com/icons/png/128/2966/2966456.png" scale="M+" value="{path: 'local>/allIndia/topBlock/vaccination/tot_dose_2', formatter: '.getCountMillion'}" />
+							</TileContent>
+							<TileContent footer="Tot-Vaccinated Male" class="responsive sapUiLargeMarginBegin" footerColor="Good">
+								<NumericContent id="icon4" icon="https://image.flaticon.com/icons/png/512/0/126.png" scale="M+" value="{path: 'local>/allIndia/topBlock/vaccination/male', formatter: '.getCountMillion'}" />
+							</TileContent>
+							<TileContent footer="Tot-Vaccinated Female" class="responsive sapUiLargeMarginBegin" footerColor="Good">
+								<NumericContent id="icon5" icon="https://icon-library.com/images/person-icon-png-transparent/person-icon-png-transparent-17.jpg" scale="M+" value="{path: 'local>/allIndia/topBlock/vaccination/female', formatter: '.getCountMillion'}" />
+							</TileContent>
+							<TileContent footer="After Effect Reported" class="responsive sapUiLargeMarginBegin" footerColor="Good">
+								<NumericContent id="icon6" icon="https://www.shareicon.net/data/2015/11/27/678427_people_512x512.png" scale="K+" value="{path: 'local>/allIndia/topBlock/vaccination/aefi', formatter: '.getCountThousand'}" />
+							</TileContent>
+						</OverflowToolbar>
+
+						<viz:VizFrame id="idVizFrame" uiConfig="{applicationSet:'fiori'}" vizType='line' width="100%" vizProperties="{title: {text: 'Vaccination Trend'}}">
+							<viz:dataset>
+								<viz.data:FlattenedDataset data="{local>/timeWiseDataToday}">
+									<viz.data:dimensions>
+										<viz.data:DimensionDefinition name="Time" value="{local>label}" />
+									</viz.data:dimensions>
+									<viz.data:measures>
+										<viz.data:MeasureDefinition name="Total" value="{local>count}" />
+										<viz.data:MeasureDefinition name="Dose 1" value="{local>dose_one}" />
+										<viz.data:MeasureDefinition name="Dose 2" value="{local>dose_two}" />
+									</viz.data:measures>
+								</viz.data:FlattenedDataset>
+							</viz:dataset>
+							<viz:feeds>
+								<viz.feeds:FeedItem id='valueAxisFeed' uid="valueAxis" type="Measure" values="Total" />
+								<viz.feeds:FeedItem id='valueAxisFeed1' uid="valueAxis" type="Measure" values="Dose 1" />
+								<viz.feeds:FeedItem id='valueAxisFeed2' uid="valueAxis" type="Measure" values="Dose 2" />
+								<viz.feeds:FeedItem id='categoryAxisFeed' uid="categoryAxis" type="Dimension" values="Time" />
+							</viz:feeds>
+						</viz:VizFrame>
+					</VBox>
+				</content>
+			</Page>
+		</pages>
+	</App>
+
+</mvc:View>
+<!-- <HBox width="100%">
+
+	<form:SimpleForm>
+		<form:content>
+			<Label text="State" />
+			<Text text="{local>/formData/state_name}" />
+
+			<Label text="City" />
+			<Text text="{local>/formData/city_name}" />
+
+			<Label text="Total Centers" />
+			<Text text="{local>/formData/total_center}" />
+
+			<Label text="Vaccination Timing" />
+			<Text text="{local>/formData/timing}" />
+		</form:content>
+	</form:SimpleForm>
+
+</HBox> -->

@@ -1,0 +1,124 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" controllerName="cowin.cowin.controller.View2" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:microchart="sap.suite.ui.microchart" xmlns:viz="sap.viz.ui5.controls" xmlns:layout="sap.ui.layout" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" xmlns:viz.data="sap.viz.ui5.data">
+    <Page id="page" class="responsive" title="Dashboard" titleAlignment="Center" navButtonPress="onBack" showNavButton="true">
+        <headerContent>
+            <Toolbar>
+                <Image src="https://static.wixstatic.com/media/74c3a1_d23c9389ba744c62b9883118b5b8eb74~mv2.png/v1/fill/w_124,h_124,al_c,q_85,usm_0.66_1.00_0.01/atsv1.webp" width="50px" height="50px" />
+            </Toolbar>
+        </headerContent>
+        <content>
+            <layout:BlockLayout>
+                <layout:BlockLayoutRow>
+                    <layout:BlockLayoutCell></layout:BlockLayoutCell>
+                    <layout:BlockLayoutCell>
+                        <HBox wrap="Wrap">
+                            <VBox class="sapUiTinyMarginBegin">
+                                <Text text="State" />
+                                <Select id="dashState" items="{local>/states}" change="onDashStateChange" width="250px" forceSelection="false">
+                                    <items>
+                                        <core:ListItem text="{local>state_name}" key="{local>state_id}" />
+                                    </items>
+                                </Select>
+                            </VBox>
+                            <VBox class="sapUiTinyMarginBegin">
+                                <Text text="District" />
+                                <Select id="dashCity" items="{local>/districts}" forceSelection="false" width="250px" change="onDashCityChange">
+                                    <items>
+                                        <core:ListItem text="{local>district_name}" key="{local>district_id}" />
+                                    </items>
+                                </Select>
+                            </VBox>
+                        </HBox>
+                    </layout:BlockLayoutCell>
+                </layout:BlockLayoutRow>
+            </layout:BlockLayout>
+            <HBox width="100%">
+                <GenericTile class="sapUiLargeMarginBegin sapUiSmallMarginTop" header="Total Centers for" subheader="Vaccination" press="press" frameType="Auto">
+                    <TileContent unit="{local>/TileData/city}" footer="{local>/TileData/state}">
+                        <NumericContent valueColor="Good" value="{local>/TileData/total_centers}" icon="sap-icon://accidental-leave" withMargin="false" />
+                    </TileContent>
+                </GenericTile>
+                <HBox width="100%" justifyContent="SpaceAround" class="sapUiSmallMarginTop saUiLargeMarginBegin">
+                    <FlexBox width="20rem" height="10rem" alignContent="Center" justifyContent="SpaceBetween">
+                        <VBox width="100%">
+                            <Text text="Vaccine Type Per Center (*click to apply filter)" class="sapUiSmallMarginBottom" />
+                            <items>
+                                <microchart:InteractiveDonutChart selectionChanged="onDonutSelect" displayedSegments="4">
+                                    <microchart:segments>
+                                        <microchart:InteractiveDonutChartSegment id="InteractiveDonutChartSegment1" label="{local>/ChartData/0/vaccine}" value="{local>/ChartData/0/percentage}" displayedValue="{local>/ChartData/0/value}" />
+                                        <microchart:InteractiveDonutChartSegment id="InteractiveDonutChartSegment2" label="{local>/ChartData/1/vaccine}" value="{local>/ChartData/1/percentage}" displayedValue="{local>/ChartData/1/value}" />
+                                        <microchart:InteractiveDonutChartSegment id="InteractiveDonutChartSegment3" label="{local>/ChartData/2/vaccine}" value="{local>/ChartData/2/percentage}" displayedValue="{local>/ChartData/2/value}" />
+                                    </microchart:segments>
+                                </microchart:InteractiveDonutChart>
+                            </items>
+                        </VBox>
+
+
+                    </FlexBox>
+                    <FlexBox width="30rem" height="10rem" alignContent="Center" justifyContent="SpaceBetween">
+                        <VBox width="100%">
+                            <Text text="Minimum Age Per Center (*click to apply filter)" width="auto" class="sapUiSmallMarginBottom" />
+                            <items>
+                                <microchart:InteractiveBarChart labelWidth="15%" selectionChanged="onBarSelect">
+                                    <microchart:bars>
+                                        <microchart:InteractiveBarChartBar id="idMicrocharts" label="Age 45+" value="{local>/ageChartData/age45}" color="Neutral" />
+                                        <microchart:InteractiveBarChartBar  id="idMicrocharts1" label="Age 18+" value="{local>/ageChartData/age18}" color="Neutral" />
+                                        <!-- <microchart:InteractiveBarChartBar label="Product 3" value="70"/> -->
+                                    </microchart:bars>
+                                </microchart:InteractiveBarChart>
+                            </items>
+                        </VBox>
+
+                    </FlexBox>
+
+                </HBox>
+            </HBox>
+            <Table id="centerDataTable" items="{path: 'local>/center_data', sorter:{path: 'block_name'}}" autoPopinMode="true" contextualWidth="Auto" alternateRowColors="true" inset="true" class="sapUiSmallMarginTop">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="Vaccination Center Details" />
+                        <ToolbarSpacer />
+                        <Button id="idButton" icon="sap-icon://download" text="Excel" type="Ghost" press="onExcelExport" />
+                    </Toolbar>
+                </headerToolbar>
+                <columns>
+                    <Column minScreenWidth="phone">
+                        <Label text="Center Name" />
+                    </Column>
+                    <Column>
+                        <Label text="Age Group" />
+                    </Column>
+                    <Column>
+                        <Label text="Vaccine" />
+                    </Column>
+                    <Column demandPopin="true" hAlign="Center" minScreenWidth="phone">
+                        <Label text="Available Dose 1" />
+                    </Column>
+                    <Column demandPopin="true" hAlign="Center" minScreenWidth="phone">
+                        <Label text="Avaliable Dose 2" />
+                    </Column>
+                    <Column demandPopin="true" minScreenWidth="tablet">
+                        <Label text="Block" />
+                    </Column>
+                    <Column demandPopin="true" minScreenWidth="tablet">
+                        <Label text="Pincode" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{local>name}" />
+                            <Text text="{local>min_age_limit}+" />
+                            <Text text="{local>vaccine}" />
+                            <Text text="{local>available_capacity_dose1}" />
+                            <Text text="{local>available_capacity_dose2}" />
+                            <Text text="{local>block_name}" />
+                            <Text text="{local>pincode}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+
+
+</mvc:View>
